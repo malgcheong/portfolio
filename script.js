@@ -4,7 +4,7 @@
 // icon and subsequent clicks are deterministic.
 const root = document.documentElement;
 const stored = localStorage.getItem('theme');
-root.dataset.theme = stored || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+root.dataset.theme = stored || 'dark'; // dark is the site default; a stored choice wins
 document.querySelector('#theme-toggle').addEventListener('click', () => {
   const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
   root.dataset.theme = next;
