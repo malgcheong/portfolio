@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Reddit Translator · 데모</title>
-<meta name="description" content="Reddit의 AI·개발 소식을 수집·번역·요약하는 개인 도구 Reddit Translator의 화면 데모입니다.">
+<meta name="description" content="Reddit의 AI·개발 게시글과 댓글을 수집·번역·요약하는 개인 도구 Reddit Translator의 화면 데모입니다.">
 <meta name="robots" content="noindex">
 <style>
 :root{--bg:#1a1a1b;--surface:#232326;--surface2:#2a2a2d;--line:#343436;--ink:#d7dadc;--muted:#818384;--accent:#ff4500;--accent-dim:#ff450022}
@@ -42,31 +42,40 @@ header.top{border-bottom:1px solid var(--line);padding:16px 0}
 .sub{color:var(--accent);font-size:12px;font-weight:700}
 .time{color:var(--muted);font-size:11.5px}
 .card h3{margin:0;font-size:15.5px;line-height:1.45;color:var(--ink);letter-spacing:-.3px}
-.thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:9px;background:var(--surface2)}
 .card p{margin:0;color:var(--muted);font-size:13px;line-height:1.7;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .meta{display:flex;gap:14px;color:var(--muted);font-size:12px;margin-top:auto;padding-top:4px}
 .meta span{display:inline-flex;align-items:center;gap:5px}
 .badge-ai{align-self:flex-start;font-size:10.5px;font-weight:700;color:var(--accent);background:var(--accent-dim);border-radius:6px;padding:3px 8px}
 /* modal */
-.overlay{position:fixed;inset:0;background:#000c;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto;z-index:20}
+.overlay{position:fixed;inset:0;background:#000c;display:none;align-items:flex-start;justify-content:center;padding:34px 16px;overflow:auto;z-index:20}
 .overlay.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--line);border-radius:16px;max-width:920px;width:100%;padding:24px 26px 30px}
-.modal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:6px}
-.modal .sub{margin-bottom:6px}
-.modal h2{margin:0;font-size:20px;line-height:1.4;letter-spacing:-.5px}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:16px;max-width:1000px;width:100%}
+.modal-head{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line);border-radius:16px 16px 0 0;padding:20px 24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;z-index:2}
+.modal-head h2{margin:4px 0 0;font-size:19px;line-height:1.4;letter-spacing:-.5px}
 .close{font-size:24px;color:var(--muted);line-height:1;padding:2px 6px;flex:0 0 auto}
-.mtabs{display:flex;gap:8px;margin:18px 0 16px}
-.mtabs button{font-size:13px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 15px}
-.mtabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.pane{display:none}.pane.on{display:block}
-.pane p{margin:0 0 13px;font-size:14px;line-height:1.85}
-.pane.orig p{color:var(--muted)}
-.sumbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
-.sumbox ul{margin:0;padding-left:20px}
-.sumbox li{margin:0 0 10px;font-size:14px;line-height:1.75}
-.quote{border-left:3px solid var(--accent);padding:8px 14px;margin:14px 0 0;color:var(--ink);font-size:13.5px;background:#ff45000f;border-radius:0 8px 8px 0}
-.src{margin-top:18px;font-size:13px}.src a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+.modal-body{display:grid;grid-template-columns:1.35fr 1fr;gap:0}
+.col-left{padding:20px 24px;border-right:1px solid var(--line);min-width:0}
+.col-right{padding:20px 22px;min-width:0}
+.col-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.3px;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between}
+.toggle-orig{font-size:11.5px;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.toggle-orig.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.body-ko{font-size:14px;line-height:1.85;margin:0 0 6px}
+.body-en{font-size:12.5px;line-height:1.7;color:var(--muted);margin:6px 0 0;display:none}
+.show-en .body-en{display:block}
+.cmt-head{font-size:13px;font-weight:700;color:var(--ink);margin:20px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+.cmt{padding:12px 0;border-bottom:1px solid var(--line)}
+.cmt:last-child{border-bottom:0}
+.cmt-top{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin-bottom:6px}
+.cmt-top b{color:#4fbcff;font-weight:600}
+.cmt-ko{font-size:13.5px;line-height:1.75;margin:0}
+.cmt-en{font-size:12px;line-height:1.65;color:var(--muted);margin:5px 0 0;display:none}
+.show-en .cmt-en{display:block}
+.sumbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.sumbox ul{margin:0;padding-left:18px}
+.sumbox li{margin:0 0 9px;font-size:13.5px;line-height:1.7}
+.quote{border-left:3px solid var(--accent);padding:8px 13px;margin:14px 0 0;color:var(--ink);font-size:13px;background:#ff45000f;border-radius:0 8px 8px 0}
+.src{margin-top:16px;font-size:12.5px;color:var(--muted)}.src a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.modal-body{grid-template-columns:1fr}.col-left{border-right:0;border-bottom:1px solid var(--line)}}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.tabs{gap:18px}.count{width:100%;margin:6px 0 0}.btn-ghost{display:none}}
 </style>
 </head>
@@ -92,16 +101,20 @@ header.top{border-bottom:1px solid var(--line);padding:16px 0}
 
 <div class="overlay" id="overlay" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
-    <div class="modal-top"><div><div class="sub" id="m-sub"></div><h2 id="m-title"></h2></div><button class="close" id="m-close" aria-label="닫기">×</button></div>
-    <div class="mtabs">
-      <button data-p="sum" class="on">요약</button>
-      <button data-p="trans">번역</button>
-      <button data-p="orig">원문</button>
+    <div class="modal-head"><div><div class="sub" id="m-sub"></div><h2 id="m-title"></h2></div><button class="close" id="m-close" aria-label="닫기">×</button></div>
+    <div class="modal-body">
+      <div class="col-left" id="col-left">
+        <p class="col-label">본문 · 댓글 번역 <button class="toggle-orig" id="toggle-orig">원문 함께 보기</button></p>
+        <p class="body-ko" id="body-ko"></p>
+        <p class="body-en" id="body-en"></p>
+        <div id="cmt-wrap"></div>
+      </div>
+      <div class="col-right">
+        <p class="col-label">AI 요약</p>
+        <div class="sumbox" id="sumbox"></div>
+        <div class="src" id="m-src"></div>
+      </div>
     </div>
-    <div class="pane sum on" id="p-sum"></div>
-    <div class="pane trans" id="p-trans"></div>
-    <div class="pane orig" id="p-orig"></div>
-    <div class="src" id="m-src"></div>
   </div>
 </div>
 
@@ -110,34 +123,53 @@ const POSTS = [
   {sub:"r/LocalLLaMA", time:"3시간 전", score:1240, comments:312,
    title:"Qwen3.5 출시: 4B·9B·35B, 256K 컨텍스트에 도구 호출 강화",
    summary:"알리바바가 Qwen3.5 계열을 4B·9B·35B 세 크기로 공개했다. 세 모델 모두 256K 컨텍스트와 개선된 도구 호출을 지원하며, 공개 몇 시간 만에 커뮤니티 MLX·GGUF 양자화가 올라왔다.",
-   trans:"알리바바가 오늘 Qwen3.5 모델 패밀리를 공개했습니다. 4B, 9B, 35B 세 가지 크기로 나오며 전부 256K 토큰 컨텍스트 윈도우를 지원합니다. 도구 호출(function calling) 정확도가 이전 세대보다 크게 올랐다는 벤치마크가 함께 공개됐습니다. 공개 직후 몇 시간 만에 커뮤니티에서 MLX와 GGUF 양자화 버전이 올라와 로컬 실행 장벽이 빠르게 낮아졌습니다.",
+   trans:"알리바바가 오늘 Qwen3.5 모델 패밀리를 공개했습니다. 4B, 9B, 35B 세 가지 크기로 나오며 전부 256K 토큰 컨텍스트 윈도우를 지원합니다. 도구 호출 정확도가 이전 세대보다 크게 올랐고, 공개 직후 몇 시간 만에 커뮤니티 MLX·GGUF 양자화가 올라와 로컬 실행 장벽이 빠르게 낮아졌습니다.",
    orig:"Alibaba just dropped the Qwen3.5 family in 4B / 9B / 35B sizes, all with a 256K context window and much stronger tool-calling. Community MLX and GGUF quants appeared within hours of release.",
    bullets:["4B·9B·35B 세 크기 동시 공개, 전부 256K 컨텍스트","도구 호출 정확도가 이전 세대 대비 크게 향상","공개 수 시간 내 MLX·GGUF 양자화 등장 → 로컬 실행 즉시 가능"],
-   quote:"\"9B가 이 크기대에서 도구 호출은 사실상 상한선 같다\" — 댓글 다수"},
+   quote:"\"9B가 이 크기대에서 도구 호출은 사실상 상한선 같다\" — 댓글 다수",
+   cmt:[
+     {a:"kaiokendev", s:284, ko:"9B가 이 크기대에서 도구 호출은 사실상 상한선 같다. 로컬로 에이전트 돌리기 딱 좋아졌음.", en:"9B feels like the ceiling for tool-calling at this size. Finally good enough to run agents locally."},
+     {a:"the_bloke_fan", s:151, ko:"양자화가 이렇게 빨리 나오는 게 미쳤다. 발표 두 시간 만에 GGUF 받아서 돌리는 중.", en:"Insane how fast the quants show up. Downloaded a GGUF two hours after the announcement and it just works."},
+     {a:"gpu_poor", s:73, ko:"35B는 24GB로도 빠듯한데 9B로도 충분해서 다행. 4B는 라우터용으로 쓸 만하다.", en:"35B is tight even on 24GB, but 9B is plenty. 4B is nice as a router."}
+   ]},
 
   {sub:"r/singularity", time:"5시간 전", score:2010, comments:540,
    title:"Anthropic, $200 플랜 반값 인하하고 $500 신규 플랜 도입",
-   summary:"보조금 시대의 종료라는 반응. Anthropic이 기존 $200 프로 플랜을 절반 수준으로 조정하면서 상위 $500 플랜을 신설했다. 사용량 한도와 우선순위를 나눈 계층제로 읽힌다.",
-   trans:"Anthropic이 요금제를 개편했습니다. 기존 $200 프로 플랜의 가격·한도를 조정하고, 그 위에 $500짜리 상위 플랜을 새로 만들었습니다. 커뮤니티에서는 '저렴하게 밀어주던 시기가 끝났다'는 반응과, 헤비 유저를 상위 플랜으로 분리하려는 계층화라는 해석이 함께 나왔습니다.",
+   summary:"보조금 시대의 종료라는 반응. Anthropic이 기존 $200 프로 플랜을 조정하면서 상위 $500 플랜을 신설했다. 사용량 한도와 우선순위를 나눈 계층제로 읽힌다.",
+   trans:"Anthropic이 요금제를 개편했습니다. 기존 $200 프로 플랜의 가격·한도를 조정하고 그 위에 $500짜리 상위 플랜을 새로 만들었습니다. '저렴하게 밀어주던 시기가 끝났다'는 반응과, 헤비 유저를 상위 플랜으로 분리하려는 계층화라는 해석이 함께 나왔습니다.",
    orig:"Looks like the era of subsidised compute is coming to an end. Anthropic restructured pricing: the old $200 Pro plan changed and a new $500 tier was introduced above it.",
    bullets:["$200 프로 플랜 가격·한도 조정","상위 $500 신규 플랜 신설 → 헤비 유저 계층 분리","'보조금 시대의 종료' vs '정상화' 반응 갈림"],
-   quote:"\"결국 실사용 비용에 수렴하는 것뿐\" — 상위 댓글"},
+   quote:"\"결국 실사용 비용에 수렴하는 것뿐\" — 상위 댓글",
+   cmt:[
+     {a:"token_burner", s:412, ko:"결국 실제 추론 비용에 수렴하는 것뿐이다. 지금까지가 비정상적으로 쌌던 거지.", en:"It's just converging to the real inference cost. What we had until now was abnormally cheap."},
+     {a:"local_maxi", s:298, ko:"이래서 로컬이다. 한 번 사두면 요금제 눈치 볼 일이 없어.", en:"This is exactly why I went local. Buy the hardware once and stop watching pricing pages."},
+     {a:"startup_cfo", s:96, ko:"$500는 팀 단위로 보면 그래도 사람 한 명보다 싸다. 문제는 예측 가능성.", en:"$500 is still cheaper than a headcount for a team. The real issue is predictability."}
+   ]},
 
   {sub:"r/LocalLLaMA", time:"6시간 전", score:842, comments:210,
    title:"'wait', 'maybe'에 로지트 페널티를 걸었더니 정확도가 올랐다",
-   summary:"과도한 추론을 유발하는 단어에 로그 확률 편향을 주는 실험. MATH-500 일부에서 'wait','maybe','perhaps' 같은 마커에 페널티를 주자 오히려 정답률이 올랐다는 보고.",
-   trans:"모델이 답을 미루게 만드는 'wait', 'maybe', 'perhaps' 같은 단어에 로그 확률 페널티를 걸어보는 실험입니다. llama.cpp에서 여러 양자화의 Qwen 계열로 MATH-500 문제 일부를 돌린 결과, 이런 '과도한 사고' 마커를 억제하자 정답률이 유의미하게 올랐다고 합니다. 모델이 결론으로 더 빨리 수렴하도록 유도한 효과로 보입니다.",
+   summary:"과도한 추론을 유발하는 단어에 로그 확률 편향을 주는 실험. MATH-500 일부에서 'wait','maybe','perhaps' 마커에 페널티를 주자 오히려 정답률이 올랐다는 보고.",
+   trans:"모델이 답을 미루게 만드는 'wait', 'maybe', 'perhaps' 같은 단어에 로그 확률 페널티를 걸어보는 실험입니다. llama.cpp에서 여러 양자화의 Qwen 계열로 MATH-500 문제 일부를 돌린 결과, 이런 '과도한 사고' 마커를 억제하자 정답률이 유의미하게 올랐다고 합니다. 결론으로 더 빨리 수렴하게 유도한 효과로 보입니다.",
    orig:"Adding a logit penalty for 'wait', 'maybe' and 'perhaps' to Qwen models. On a subset of MATH-500, penalising these overthinking markers actually improved accuracy.",
    bullets:["불확실성 단어에 로그 확률 페널티 부여","MATH-500 일부에서 정답률 상승 관측","'과도한 사고' 억제가 수렴에 도움이라는 가설"],
-   quote:"\"작은 모델일수록 효과가 크더라\" — 실험자 후속 댓글"},
+   quote:"\"작은 모델일수록 효과가 크더라\" — 실험자 후속 댓글",
+   cmt:[
+     {a:"grammar_hacker", s:167, ko:"작은 모델일수록 효과가 크더라. 큰 모델은 어차피 알아서 잘 멈춘다.", en:"The effect is bigger on smaller models. Larger ones already stop overthinking on their own."},
+     {a:"skeptic_dev", s:88, ko:"샘플이 50문제뿐이라 아직은 조심스럽다. 벤치 전체로 돌려봐야.", en:"Only 50 problems in the sample, so I'd be cautious. Needs the full benchmark."},
+     {a:"prompt_smith", s:41, ko:"이거 프롬프트로 '바로 답해'라고 하는 거랑 뭐가 다른지 궁금.", en:"Curious how this differs from just prompting 'answer directly'."}
+   ]},
 
   {sub:"r/MachineLearning", time:"8시간 전", score:430, comments:88,
    title:"문법 제약 디코딩, 툴콜 JSON 오류를 20%→1% 미만으로",
    summary:"JSON 스키마를 문법으로 변환해 디코딩을 제약하면 7~14B 모델의 구조화 출력 오류가 20% 안팎에서 1% 미만으로 떨어진다는 논문. 작업 품질 저하는 없었다.",
-   trans:"JSON 스키마를 문법(grammar) 규칙으로 변환해 디코딩 단계에서 형식을 강제하는 방법에 관한 논문입니다. 7~14B 모델에서 구조화 출력의 형식 오류가 기존 약 20%에서 1% 미만으로 떨어졌고, 그러면서도 작업 자체의 품질 저하는 관측되지 않았다고 보고합니다. 프롬프트로 '형식을 지켜라' 요청하는 것보다 훨씬 안정적이라는 결론입니다.",
+   trans:"JSON 스키마를 문법(grammar) 규칙으로 변환해 디코딩 단계에서 형식을 강제하는 방법에 관한 논문입니다. 7~14B 모델에서 구조화 출력의 형식 오류가 기존 약 20%에서 1% 미만으로 떨어졌고, 작업 자체의 품질 저하는 관측되지 않았다고 보고합니다. 프롬프트로 '형식을 지켜라' 요청하는 것보다 훨씬 안정적이라는 결론입니다.",
    orig:"A paper shows grammar-constrained decoding (JSON schema to grammar) reduces malformed structured outputs from ~20% to under 1% for 7-14B models, without hurting task quality.",
    bullets:["JSON 스키마 → 문법 변환 후 디코딩 제약","형식 오류 20% → 1% 미만","작업 품질 저하 없음 · 프롬프트 요청보다 안정적"],
-   quote:"\"프롬프트로 부탁하지 말고 디코딩에서 막아라\"의 근거"},
+   quote:"\"프롬프트로 부탁하지 말고 디코딩에서 막아라\"의 근거",
+   cmt:[
+     {a:"schema_first", s:120, ko:"프롬프트로 부탁하지 말고 디코딩에서 막아라. 이걸 데이터로 보여준 게 크다.", en:"Don't ask in the prompt, enforce it at decode time. Great to finally see data on it."},
+     {a:"vllm_user", s:64, ko:"이미 llama.cpp GBNF로 쓰고 있었는데 수치가 이 정도일 줄은 몰랐다.", en:"Been using llama.cpp GBNF already, didn't realize the numbers were this dramatic."}
+   ]},
 
   {sub:"r/LocalLLaMA", time:"9시간 전", score:690, comments:154,
    title:"16GB M4 Mac mini에서 dense 9B가 18 tok/s로 돈다",
@@ -145,15 +177,23 @@ const POSTS = [
    trans:"기본형 M4 맥미니(통합 메모리 16GB)에서 로컬 모델 몇 종을 벤치마크한 글입니다. dense 9B 모델은 초당 약 18토큰을 생성했고, 활성 파라미터가 작은 소형 MoE 라우터는 70토큰/초 이상을 냈습니다. 메모리 대역폭 제약 안에서 '작은 모델로 라우팅, 큰 모델은 품질 담당'이라는 역할 분리가 합리적이라는 결론입니다.",
    orig:"Benchmarked several local models on a 16GB M4 Mac mini: dense 9B generates ~18 tok/s, while a small MoE router hits 70+ tok/s thanks to the low active parameter count.",
    bullets:["dense 9B ≈ 18 tok/s, 소형 MoE 라우터 70+ tok/s","메모리 대역폭이 생성 속도의 상한","역할 분리(라우터/워커)가 16GB에서 합리적"],
-   quote:"\"16GB면 30B은 무리, 9B가 실사용 상한\""},
+   quote:"\"16GB면 30B은 무리, 9B가 실사용 상한\"",
+   cmt:[
+     {a:"mac_tinkerer", s:143, ko:"16GB면 30B은 무리다. 9B가 실사용 상한이고 그마저도 KV 캐시 아끼면서 써야 함.", en:"30B is a no-go on 16GB. 9B is the practical ceiling, and even then you nurse the KV cache."},
+     {a:"m_series", s:77, ko:"프리필이 느린 게 진짜 문제. 긴 프롬프트 넣으면 첫 토큰까지 한참 걸린다.", en:"Prefill is the real bottleneck. Long prompts mean a long wait for the first token."}
+   ]},
 
   {sub:"r/ChatGPTCoding", time:"11시간 전", score:275, comments:61,
    title:"코딩 에이전트가 이미 읽은 파일의 옛 버전을 프롬프트에 계속 넣는다",
    summary:"에이전트가 파일을 수정한 뒤에도 컨텍스트에 옛 버전이 남아 혼선을 준다는 지적. 도구 결과를 최신 상태로 갱신하지 않는 하네스의 문제로 보인다.",
-   trans:"코딩 에이전트를 쓰다 보면, 이미 수정한 파일인데도 프롬프트 컨텍스트에는 옛 버전 내용이 그대로 남아 모델이 헷갈리는 경우가 있다는 글입니다. 도구 호출 결과를 최신 파일 상태로 갱신하지 않는 하네스 설계의 문제로 보이며, 같은 헬퍼를 새로 만들어 버리는 중복도 여기서 비롯된다는 의견이 이어졌습니다.",
+   trans:"코딩 에이전트를 쓰다 보면 이미 수정한 파일인데도 프롬프트 컨텍스트에는 옛 버전 내용이 그대로 남아 모델이 헷갈리는 경우가 있다는 글입니다. 도구 호출 결과를 최신 파일 상태로 갱신하지 않는 하네스 설계의 문제로 보이며, 같은 헬퍼를 새로 만들어 버리는 중복도 여기서 비롯된다는 의견이 이어졌습니다.",
    orig:"Your coding agent's prompt often contains old versions of files it already edited. Agents then write a new helper instead of finding the one you already have.",
    bullets:["수정 후에도 컨텍스트에 파일 옛 버전 잔존","모델 혼선 → 중복 코드 생성으로 이어짐","도구 결과 최신화가 하네스의 핵심 과제"],
-   quote:"\"모델이 아니라 하네스 문제다\"에 공감 다수"},
+   quote:"\"모델이 아니라 하네스 문제다\"에 공감 다수",
+   cmt:[
+     {a:"harness_hacker", s:98, ko:"모델이 아니라 하네스 문제다. 파일 편집하면 컨텍스트에서 옛 버전을 지워줘야지.", en:"It's a harness problem, not a model problem. Edit a file and the old version should be evicted from context."},
+     {a:"agent_ops", s:52, ko:"우린 매 턴마다 파일 상태를 다시 주입해서 해결했다. 토큰은 좀 더 쓰지만 훨씬 안정적.", en:"We fixed it by re-injecting file state every turn. Costs more tokens but far more stable."}
+   ]},
 
   {sub:"r/programming", time:"13시간 전", score:980, comments:233,
    title:"SSH로 스스로 퍼지는 npm 웜 패키지 9종 발견",
@@ -161,7 +201,11 @@ const POSTS = [
    trans:"악성 자가 전파(웜) 코드를 담은 npm 패키지 9종이 발견됐습니다. 설치되면 로컬의 SSH 자격 증명을 이용해 접근 가능한 다른 호스트로 스스로 퍼지도록 설계돼 있었습니다. 공급망 공격이 '설치 한 번'에서 '자동 확산'으로 진화한 사례로, 잠금 파일·무결성 검증·최소 권한의 중요성이 다시 강조됐습니다.",
    orig:"Nine npm packages shipping a worm that spreads by itself over SSH. Once installed it uses local SSH credentials to propagate to other reachable hosts.",
    bullets:["악성 npm 패키지 9종, 자가 전파 웜 내장","로컬 SSH 자격으로 타 호스트 확산","공급망 공격의 '자동 확산' 단계 진입"],
-   quote:"\"lockfile + 무결성 검증은 이제 선택이 아니다\""},
+   quote:"\"lockfile + 무결성 검증은 이제 선택이 아니다\"",
+   cmt:[
+     {a:"secure_by_default", s:203, ko:"lockfile + 무결성 검증은 이제 선택이 아니다. CI에서 postinstall 스크립트부터 막아라.", en:"Lockfile plus integrity checks are no longer optional. Start by blocking postinstall scripts in CI."},
+     {a:"devops_ron", s:88, ko:"SSH 키를 에이전트에 무기한 물려두는 습관부터 고쳐야 한다.", en:"People need to stop keeping SSH keys loaded in the agent indefinitely."}
+   ]},
 
   {sub:"r/LocalLLaMA", time:"15시간 전", score:512, comments:97,
    title:"LFM2.5-8B-A1B: 16GB에 편하게 들어가는 MoE",
@@ -169,7 +213,11 @@ const POSTS = [
    trans:"Liquid가 공개한 LFM2.5-8B-A1B는 활성 파라미터가 약 15억(1.5B)인 혼합 전문가(MoE) 모델입니다. 토큰마다 활성화된 전문가만 읽기 때문에 메모리 대역폭이 제한된 기기에서도 빠르게 돌고, 16GB 통합 메모리에 여유 있게 들어갑니다. 계획·라우팅·추출처럼 빈도 높은 작업에 붙이기 좋다는 평입니다.",
    orig:"Liquid released LFM2.5-8B-A1B, a mixture-of-experts model with ~1.5B active parameters. Because only the active experts are read per token, it runs fast on bandwidth-limited machines while fitting comfortably in 16GB.",
    bullets:["활성 파라미터 ~1.5B MoE","토큰당 활성 전문가만 읽어 대역폭 병목 회피","16GB에 여유 · 라우터/플래너 용도로 적합"],
-   quote:"\"작은 기계에서 MoE가 이래서 좋다\""},
+   quote:"\"작은 기계에서 MoE가 이래서 좋다\"",
+   cmt:[
+     {a:"moe_believer", s:112, ko:"작은 기계에서 MoE가 이래서 좋다. 총 8B인데 체감 속도는 1.5B급.", en:"This is why MoE shines on small machines. 8B total but feels like a 1.5B in speed."},
+     {a:"router_life", s:59, ko:"라우터로 붙여봤는데 계획 단계가 거의 즉시 끝난다. 품질은 dense 9B한테 넘기면 됨.", en:"Wired it as a router and planning is basically instant. Hand quality off to a dense 9B."}
+   ]},
 
   {sub:"r/singularity", time:"18시간 전", score:735, comments:181,
    title:"NVIDIA, 오픈소스 에이전트 샌드박스 'OpenShell' 공개",
@@ -177,51 +225,54 @@ const POSTS = [
    trans:"NVIDIA가 로컬·오픈 에이전트를 프롬프트 규칙이 아니라 실제 실행 환경의 제한으로 통제할 수 있는 오픈소스 샌드박스 'OpenShell'을 공개했습니다. 에이전트가 할 수 있는 일을 코드 레벨에서 가둔다는 접근으로, 100여 개 기업이 이 안전 스택에 참여했으나 일부 대형 업체는 아직 합류하지 않은 상태라고 합니다.",
    orig:"NVIDIA shipped OpenShell, an open source sandbox that lets local and open agents be constrained by the actual execution environment rather than prompt rules. 100+ companies joined the safety stack.",
    bullets:["실행 환경 레벨에서 에이전트 통제하는 오픈소스 샌드박스","프롬프트 규칙보다 강한 제약","100여 기업 참여 · 일부 대형사는 미합류"],
-   quote:"\"가드레일은 결국 런타임에서 걸어야 한다\""},
+   quote:"\"가드레일은 결국 런타임에서 걸어야 한다\"",
+   cmt:[
+     {a:"runtime_guard", s:130, ko:"가드레일은 결국 런타임에서 걸어야 한다. 프롬프트 규칙은 우회당하기 마련.", en:"Guardrails ultimately have to live in the runtime. Prompt rules get bypassed sooner or later."},
+     {a:"open_stack", s:66, ko:"오픈소스라는 게 핵심. 폐쇄형 가드레일은 감사(audit)가 안 돼서 못 믿겠다.", en:"Open source is the key part. I can't trust closed guardrails I can't audit."}
+   ]}
 ];
 
-const SUBS = [...new Set(POSTS.map(p=>p.sub))];
-const grid = document.getElementById('grid');
-const chips = document.getElementById('chips');
-let filter = null;
-
+const SUBS=[...new Set(POSTS.map(p=>p.sub))];
+const grid=document.getElementById('grid'),chips=document.getElementById('chips');
+let filter=null;
 function render(){
-  const list = filter ? POSTS.filter(p=>p.sub===filter) : POSTS;
-  grid.innerHTML = '';
-  list.forEach((p,i)=>{
-    const idx = POSTS.indexOf(p);
-    const c = document.createElement('button');
-    c.className='card';
-    c.onclick=()=>openModal(idx);
-    c.innerHTML = `<div class="card-top"><span class="sub">${p.sub}</span><span class="time">${p.time}</span></div>
-      <h3>${p.title}</h3><span class="badge-ai">AI 요약</span>
-      <p>${p.summary}</p>
-      <div class="meta"><span>▲ ${p.score.toLocaleString()}</span><span>💬 ${p.comments}</span></div>`;
+  const list=filter?POSTS.filter(p=>p.sub===filter):POSTS;
+  grid.innerHTML='';
+  list.forEach(p=>{
+    const idx=POSTS.indexOf(p);
+    const c=document.createElement('button');c.className='card';c.onclick=()=>openModal(idx);
+    c.innerHTML=`<div class="card-top"><span class="sub">${p.sub}</span><span class="time">${p.time}</span></div>
+      <h3>${p.title}</h3><span class="badge-ai">AI 요약</span><p>${p.summary}</p>
+      <div class="meta"><span>▲ ${p.score.toLocaleString()}</span><span>💬 ${p.comments} 댓글 번역됨</span></div>`;
     grid.appendChild(c);
   });
-  chips.innerHTML = `<button class="chip ${!filter?'on':''}" data-s="">전체</button>` +
-    SUBS.map(s=>`<button class="chip ${filter===s?'on':''}" data-s="${s}">${s}</button>`).join('') +
+  chips.innerHTML=`<button class="chip ${!filter?'on':''}" data-s="">전체</button>`+
+    SUBS.map(s=>`<button class="chip ${filter===s?'on':''}" data-s="${s}">${s}</button>`).join('')+
     `<span class="count">전체 ${list.length}건</span>`;
   chips.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{filter=b.dataset.s||null;render();});
 }
-
-const overlay=document.getElementById('overlay');
+const overlay=document.getElementById('overlay'),colLeft=document.getElementById('col-left');
 function openModal(i){
   const p=POSTS[i];
-  document.getElementById('m-sub').textContent=p.sub+' · '+p.time;
+  document.getElementById('m-sub').textContent=p.sub+' · '+p.time+' · ▲ '+p.score.toLocaleString();
   document.getElementById('m-title').textContent=p.title;
-  document.getElementById('p-sum').innerHTML=`<div class="sumbox"><ul>${p.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>${p.quote?`<div class="quote">${p.quote}</div>`:''}</div>`;
-  document.getElementById('p-trans').innerHTML=`<p>${p.trans}</p>`;
-  document.getElementById('p-orig').innerHTML=`<p>${p.orig}</p>`;
-  document.getElementById('m-src').innerHTML=`<a href="#">원문 보기 ↗</a> · AI가 번역·요약했습니다`;
-  setPane('sum');
+  document.getElementById('body-ko').textContent=p.trans;
+  document.getElementById('body-en').textContent=p.orig;
+  document.getElementById('cmt-wrap').innerHTML=
+    `<p class="cmt-head">댓글 ${p.comments}개 중 상위 ${p.cmt.length}개 · AI 번역</p>`+
+    p.cmt.map(c=>`<div class="cmt"><div class="cmt-top"><b>u/${c.a}</b><span>▲ ${c.s}</span></div>
+      <p class="cmt-ko">${c.ko}</p><p class="cmt-en">${c.en}</p></div>`).join('');
+  document.getElementById('sumbox').innerHTML=`<ul>${p.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>${p.quote?`<div class="quote">${p.quote}</div>`:''}`;
+  document.getElementById('m-src').innerHTML=`<a href="#">Reddit 원문 ↗</a> · 본문·댓글을 AI가 번역하고 요약했습니다`;
+  colLeft.classList.remove('show-en');
+  const t=document.getElementById('toggle-orig');t.classList.remove('on');t.textContent='원문 함께 보기';
   overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');
+  overlay.scrollTop=0;
 }
-function setPane(name){
-  document.querySelectorAll('.mtabs button').forEach(b=>b.classList.toggle('on',b.dataset.p===name));
-  document.querySelectorAll('.pane').forEach(el=>el.classList.toggle('on',el.classList.contains(name)));
-}
-document.querySelectorAll('.mtabs button').forEach(b=>b.onclick=()=>setPane(b.dataset.p));
+document.getElementById('toggle-orig').onclick=function(){
+  const on=colLeft.classList.toggle('show-en');
+  this.classList.toggle('on',on);this.textContent=on?'번역만 보기':'원문 함께 보기';
+};
 function closeModal(){overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');}
 document.getElementById('m-close').onclick=closeModal;
 overlay.onclick=e=>{if(e.target===overlay)closeModal();};
