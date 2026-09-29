@@ -9,7 +9,7 @@ Java·Spring 백엔드를 중심으로 데이터 수집, LLM 분석, 배치 운�
 ## 대표 프로젝트
 
 
-## 01. Reddit Translator
+## 01. LangGraph 기반 Reddit 다이제스트 자동화
 
 **개인 프로젝트 · 설계·개발·운영** · Spring Boot · React · FastAPI · PostgreSQL · LLM API
 
@@ -24,6 +24,12 @@ Java·Spring 백엔드를 중심으로 데이터 수집, LLM 분석, 배치 운�
 처음에는 DeepSeek API로 Reddit 게시글과 댓글을 번역하고, 외부 AI API로 요약하는 웹 도구를 만들었습니다. 이후 로컬 모델을 직접 운영해 보려고 M4 Mac mini 16GB를 마련했습니다.
 
 16GB 메모리에 맞춰 모델을 선정하고 Ollama 실행 환경을 구성했습니다. 글 선정에는 lfm2.5:8b, 초안 작성과 평가에는 qwen3.5:9b를 사용하고, MLX에서도 벤치마크를 진행했습니다. 이를 바탕으로 초안 작성·검사·평가 후 Discord에서 승인을 받는 [reddit-orchestrator](https://github.com/malgcheong/reddit-orchestrator)를 개발했습니다. 기본 처리는 로컬 모델로 실행하며, 평가 확신도가 낮을 때 외부 API를 사용할 수 있도록 구성했습니다.
+
+### LangGraph로 실행 순서와 상태 관리
+
+수집·글 선정·초안 작성·검사·평가·승인·발행을 StateGraph의 7개 노드로 구성했습니다. 조건부 엣지로 검사 결과와 승인 여부에 따라 다음 단계를 결정합니다.
+
+PostgreSQL 체크포인트에 실행 상태를 저장하고, Discord 승인을 기다릴 때는 `interrupt()`로 실행을 멈춥니다. 응답이 오면 `Command(resume=...)`로 이어서 처리합니다. 단계별 모델·토큰 사용량·처리 시간은 Spring Boot 운영 대시보드에서 확인할 수 있습니다.
 
 ### 담당 역할
 
