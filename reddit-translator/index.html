@@ -30,7 +30,19 @@ header.top{border-bottom:1px solid var(--line);padding:16px 0}
 .search input{flex:1;background:none;border:0;color:var(--ink);font:inherit;padding:12px 0;outline:none}
 .search input::placeholder{color:var(--muted)}
 .btn-go{background:var(--accent);color:#fff;font-weight:700;border-radius:8px;padding:9px 18px;font-size:13.5px}
-.btn-ghost{border:1px solid var(--line);border-radius:8px;padding:9px 13px;color:var(--muted);font-size:13.5px}
+.btn-ghost{border:1px solid var(--line);border-radius:8px;padding:9px 13px;color:var(--muted);font-size:13.5px;transition:.15s}
+.btn-ghost:hover{border-color:var(--accent);color:var(--ink)}
+.btn-ghost.on{border-color:var(--accent);color:var(--accent)}
+.btn-ghost[disabled]{opacity:.6;cursor:default}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-1px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.new-badge{font-size:10px;font-weight:800;color:#fff;background:#3fb950;border-radius:5px;padding:2px 7px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:#111;border:1px solid var(--line);color:var(--ink);font-size:13.5px;font-weight:600;padding:12px 20px;border-radius:999px;box-shadow:0 8px 30px #000a;opacity:0;pointer-events:none;transition:.25s;z-index:40}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.art-actions{display:flex;gap:10px;align-items:center;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.btn-publish{background:var(--accent);color:#fff;font-weight:700;border-radius:999px;padding:9px 20px;font-size:13.5px}
+.btn-blog{border:1px solid var(--line);border-radius:999px;padding:9px 18px;font-size:13.5px;color:var(--ink)}
+.btn-blog:hover{border-color:var(--accent);color:var(--accent)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:18px}
 .chip{font-size:12.5px;font-weight:600;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:5px 13px;transition:.15s}
 .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -122,8 +134,8 @@ header.top{border-bottom:1px solid var(--line);padding:16px 0}
   <section id="view-posts">
     <div class="toolbar">
       <div class="search"><span style="color:var(--muted)">🔍</span><input placeholder="관심 있는 게시글·댓글 검색..." aria-label="검색"><button class="btn-go">검색</button></div>
-      <button class="btn-ghost">필터</button>
-      <button class="btn-ghost">＋ 신규 수집</button>
+      <button class="btn-ghost" id="btn-filter">필터: 인기순</button>
+      <button class="btn-ghost" id="btn-collect">＋ 신규 수집</button>
     </div>
     <div class="chips" id="chips"></div>
     <div class="grid" id="grid"></div>
@@ -140,6 +152,7 @@ header.top{border-bottom:1px solid var(--line);padding:16px 0}
   </section>
 </main>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="overlay" id="overlay" aria-hidden="true">
   <div class="modal" id="modal-post" role="dialog" aria-modal="true" aria-labelledby="m-title">
     <div class="modal-head"><div><div class="sub" id="m-sub"></div><h2 id="m-title"></h2></div><button class="close close-x" aria-label="닫기">×</button></div>
@@ -278,7 +291,7 @@ const POSTS = [
 ];
 
 const DIGESTS=[
- {date:"2026-09-30", status:"발행됨",
+ {date:"2026-09-30", status:"발행됨", url:"https://malgcheong.github.io/posts/digest-2026-09-30/",
   title:"Anthropic 요금 개편, 자가전파 npm 웜, 코딩 에이전트의 컨텍스트 문제",
   tldr:["Anthropic이 $200 프로 플랜을 조정하고 상위 $500 플랜을 신설 — '보조금 시대의 종료' 반응.",
         "SSH로 스스로 퍼지는 악성 npm 패키지 9종 발견, 공급망 공격이 자동 확산 단계로.",
@@ -288,7 +301,7 @@ const DIGESTS=[
    {h:"SSH로 자가 전파하는 npm 웜 9종", body:"설치되면 로컬 SSH 자격으로 접근 가능한 다른 호스트에 스스로 퍼지는 악성 패키지가 배포됐다. lockfile·무결성 검증·최소 권한, postinstall 스크립트 차단의 중요성이 다시 강조됐다.", src:"r/programming"},
    {h:"에이전트 프롬프트에 남는 파일 옛 버전", body:"이미 수정한 파일인데도 컨텍스트에 옛 내용이 남아 모델이 헷갈리고 중복 코드를 만든다. 도구 결과를 최신 파일 상태로 갱신하는 게 하네스의 핵심 과제라는 결론.", src:"r/ChatGPTCoding"}
   ]},
- {date:"2026-09-29", status:"발행됨",
+ {date:"2026-09-29", status:"발행됨", url:"https://malgcheong.github.io/posts/digest-2026-09-29/",
   title:"Qwen3.5 등장과 16GB 로컬 추론, 그리고 '덜 생각하게' 만들기",
   tldr:["알리바바 Qwen3.5(4B·9B·35B, 256K) 공개, 몇 시간 만에 로컬 양자화 등장.",
         "16GB M4 맥미니에서 dense 9B가 ~18 tok/s — 역할 분리로 로컬 운영이 현실화.",
@@ -319,7 +332,7 @@ function renderDigest(){
   document.getElementById('dg-list').innerHTML=DIGESTS.map((d,i)=>
     `<button class="dg-card" onclick="openDigest(${i})"><div class="dg-top"><span class="dg-date">${d.date}</span><span class="dg-status">✓ ${d.status}</span></div>
      <h3>${d.title}</h3><p class="dg-tldr">${d.tldr[0]}</p>
-     <div class="dg-meta">${d.items.length}개 글 · TL;DR ${d.tldr.length}줄</div></button>`).join('');
+     <div class="dg-meta">${d.items.length}개 글 · TL;DR ${d.tldr.length}줄 · <a href="${d.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--accent)">블로그에서 보기 ↗</a></div></button>`).join('');
 }
 function renderCollect(){
   document.getElementById('collect-status').innerHTML=
@@ -332,13 +345,23 @@ function renderCollect(){
      <div class="cs-subs">${SUBS.map(s=>`<div class="cs-sub"><span>${s}</span><span class="on-dot">● 감시 중</span></div>`).join('')}</div>`;
 }
 
+const SORTS=["인기순","최신순","댓글순"];let sortIdx=0;
+function sorted(list){
+  const m=SORTS[sortIdx];
+  const a=[...list];
+  if(m==="인기순")a.sort((x,y)=>y.score-x.score);
+  else if(m==="댓글순")a.sort((x,y)=>y.comments-x.comments);
+  // 최신순 = 삽입 순서(신규 수집이 앞에 붙음)
+  return a;
+}
 function render(){
-  const list=filter?POSTS.filter(p=>p.sub===filter):POSTS;
+  let list=filter?POSTS.filter(p=>p.sub===filter):POSTS.slice();
+  list=sorted(list);
   grid.innerHTML='';
   list.forEach(p=>{
     const idx=POSTS.indexOf(p);
     const c=document.createElement('button');c.className='card';c.onclick=()=>openModal(idx);
-    c.innerHTML=`<div class="card-top"><span class="sub">${p.sub}</span><span class="time">${p.time}</span></div>
+    c.innerHTML=`<div class="card-top"><span class="sub">${p.sub}</span>${p.isNew?'<span class="new-badge">NEW</span>':''}<span class="time" style="margin-left:auto">${p.time}</span></div>
       <h3>${p.title}</h3><span class="badge-ai">AI 요약</span><p>${p.summary}</p>
       <div class="meta"><span>▲ ${p.score.toLocaleString()}</span><span>💬 ${p.comments} 댓글 번역됨</span></div>`;
     grid.appendChild(c);
@@ -347,6 +370,48 @@ function render(){
     SUBS.map(s=>`<button class="chip ${filter===s?'on':''}" data-s="${s}">${s}</button>`).join('')+
     `<span class="count">전체 ${list.length}건</span>`;
   chips.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{filter=b.dataset.s||null;render();});
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200);}
+// 필터: 정렬 전환
+document.getElementById('btn-filter').onclick=function(){
+  sortIdx=(sortIdx+1)%SORTS.length;this.textContent='필터: '+SORTS[sortIdx];this.classList.toggle('on',sortIdx!==0);
+  render();toast(SORTS[sortIdx]+'으로 정렬했습니다');
+};
+// 신규 수집: 수집 시뮬레이션 + 새 글 추가
+const INBOX=[
+ {sub:"r/LocalLLaMA",time:"방금",score:96,comments:23,isNew:true,
+  title:"llama.cpp, Vulkan 백엔드로 통합 그래픽에서도 속도 개선",
+  summary:"llama.cpp Vulkan 백엔드가 개선되어 내장 그래픽·비엔비디아 GPU에서도 생성 속도가 눈에 띄게 올랐다는 벤치가 올라왔다.",
+  trans:"llama.cpp의 Vulkan 백엔드가 업데이트되며 통합 그래픽과 비(非)엔비디아 GPU에서도 토큰 생성 속도가 유의미하게 향상됐다는 벤치마크가 공유됐습니다. CUDA가 없는 환경에서도 로컬 추론 선택지가 넓어졌습니다.",
+  orig:"llama.cpp's Vulkan backend got a big update: noticeably faster generation on integrated graphics and non-NVIDIA GPUs.",
+  bullets:["Vulkan 백엔드 성능 개선","통합 그래픽·비엔비디아 GPU에서 속도 향상","CUDA 없는 환경의 로컬 추론 선택지 확대"],
+  quote:"\"드디어 내장 그래픽으로도 쓸 만하다\"",
+  cmt:[{a:"vulkan_fan",s:41,ko:"드디어 내장 그래픽으로도 쓸 만하다. 노트북에서 테스트 중.",en:"Finally usable on iGPU. Testing on a laptop right now."}]},
+ {sub:"r/MachineLearning",time:"방금",score:58,comments:12,isNew:true,
+  title:"소형 모델 증류에서 'teacher 앙상블'이 단일 teacher보다 낫다",
+  summary:"여러 teacher의 출력을 앙상블해 증류하면 단일 teacher 대비 소형 student의 일반화가 개선된다는 실험 결과.",
+  trans:"소형 모델 증류(distillation)에서 여러 teacher 모델의 출력을 앙상블해 학습하면, 단일 teacher를 쓸 때보다 student의 일반화 성능이 개선된다는 실험이 공유됐습니다. 계산 비용은 늘지만 소형 모델 품질을 끌어올리는 실용적 방법으로 평가됩니다.",
+  orig:"In small-model distillation, ensembling several teachers beats a single teacher for the student's generalization.",
+  bullets:["다중 teacher 앙상블 증류","단일 teacher 대비 일반화 개선","비용↑이지만 소형 모델 품질에 실효"],
+  quote:"\"비용만 감당되면 확실히 이득\"",
+  cmt:[{a:"distill_er",s:19,ko:"비용만 감당되면 확실히 이득. 3-teacher까지가 가성비.",en:"Clear win if you can afford it. 3 teachers is the sweet spot."}]}
+];
+document.getElementById('btn-collect').onclick=function(){
+  if(!INBOX.length){toast('새로 수집할 글이 없습니다');return;}
+  const btn=this;btn.disabled=true;btn.innerHTML='<span class="spin"></span>수집 중...';
+  setTimeout(()=>{
+    const batch=INBOX.splice(0,2);
+    POSTS.unshift(...batch);
+    filter=null;sortIdx=1;document.getElementById('btn-filter').textContent='필터: 최신순';document.getElementById('btn-filter').classList.add('on');
+    render();
+    btn.disabled=false;btn.textContent='＋ 신규 수집';
+    toast(`새 글 ${batch.length}건을 수집하고 번역했습니다`);
+  },1300);
+};
+function publishDigest(i){
+  const d=DIGESTS[i];
+  toast('블로그에 발행되었습니다 · 새 창에서 확인하세요');
+  setTimeout(()=>window.open(d.url,'_blank','noopener'),400);
 }
 const overlay=document.getElementById('overlay'),colLeft=document.getElementById('col-left');
 const modalPost=document.getElementById('modal-post'),modalArt=document.getElementById('modal-article');
@@ -357,8 +422,10 @@ function openDigest(i){
   document.getElementById('art-title').textContent=d.title;
   document.getElementById('art-body').innerHTML=
     `<div class="note"><b>TL;DR</b><ul>${d.tldr.map(t=>`<li>${t}</li>`).join('')}</ul></div>`+
-    d.items.map(it=>`<h4>${it.h}</h4><p>${it.body}</p><p class="art-src"><a href="#">${it.src} 원문 ↗</a></p>`).join('')+
-    `<div class="src" style="margin-top:22px">이 다이제스트는 수집한 글을 골라 AI가 요약하고, 사람이 검토한 뒤 블로그에 발행합니다.</div>`;
+    d.items.map(it=>`<h4>${it.h}</h4><p>${it.body}</p><p class="art-src"><a href="#" onclick="return false">${it.src} 원문 ↗</a></p>`).join('')+
+    `<div class="art-actions"><button class="btn-publish" onclick="publishDigest(${i})">발행</button>`+
+    `<a class="btn-blog" href="${d.url}" target="_blank" rel="noopener">블로그에서 보기 ↗</a>`+
+    `<span class="src" style="margin:0 0 0 auto">검토 후 발행됩니다</span></div>`;
   modalPost.hidden=true;modalArt.hidden=false;showOverlay();
 }
 function openModal(i){
