@@ -75,6 +75,35 @@ header.top{border-bottom:1px solid var(--line);padding:16px 0}
 .sumbox li{margin:0 0 9px;font-size:13.5px;line-height:1.7}
 .quote{border-left:3px solid var(--accent);padding:8px 13px;margin:14px 0 0;color:var(--ink);font-size:13px;background:#ff45000f;border-radius:0 8px 8px 0}
 .src{margin-top:16px;font-size:12.5px;color:var(--muted)}.src a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+/* digest + collect views */
+.dg-intro{margin:24px 0 18px}.dg-intro h2{margin:0 0 6px;font-size:22px;letter-spacing:-.5px}.dg-intro p{margin:0;color:var(--muted);font-size:13.5px}
+.dg-list{display:flex;flex-direction:column;gap:14px;padding-bottom:60px}
+.dg-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;text-align:left;display:block;width:100%;transition:border-color .15s,transform .15s}
+.dg-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.dg-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.dg-date{font-size:12px;font-weight:700;color:#fff;background:var(--accent);border-radius:6px;padding:3px 9px}
+.dg-status{font-size:11.5px;color:var(--muted)}
+.dg-card h3{margin:0 0 8px;font-size:17px;letter-spacing:-.4px;line-height:1.4}
+.dg-card .dg-tldr{margin:0;color:var(--muted);font-size:13px;line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dg-meta{margin-top:10px;font-size:12px;color:var(--muted)}
+.collect-status{padding-bottom:60px}
+.cs-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.cs-stat{flex:1;min-width:150px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.cs-stat b{display:block;font-size:22px;color:var(--ink);letter-spacing:-.5px}.cs-stat span{font-size:12px;color:var(--muted)}
+.cs-subs{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 4px}
+.cs-sub{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);font-size:13.5px}
+.cs-sub:last-child{border-bottom:0}
+.cs-sub .on-dot{color:#3fb950;font-size:12px}
+/* article modal (digest detail) */
+.modal.article{max-width:760px}
+.modal.article .modal-body{grid-template-columns:1fr}
+.art{padding:22px 26px 30px}
+.art .note{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:0 0 22px}
+.art .note b{color:var(--accent);font-size:12.5px}
+.art .note ul{margin:8px 0 0;padding-left:18px}.art .note li{font-size:13.5px;line-height:1.7;margin:0 0 6px}
+.art h4{margin:22px 0 8px;font-size:16px;letter-spacing:-.3px}
+.art p{margin:0 0 8px;font-size:14px;line-height:1.85;color:var(--ink)}
+.art .art-src{font-size:12.5px;margin:0 0 4px}.art .art-src a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.modal-body{grid-template-columns:1fr}.col-left{border-right:0;border-bottom:1px solid var(--line)}}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.tabs{gap:18px}.count{width:100%;margin:6px 0 0}.btn-ghost{display:none}}
 </style>
@@ -86,22 +115,34 @@ header.top{border-bottom:1px solid var(--line);padding:16px 0}
     <div class="logo"><b>Reddit Translator</b><span>읽고 싶은 AI 소식을, 내가 정리한 글로</span></div>
     <div class="top-actions"><button>설정</button><button>로그인</button></div>
   </div>
-  <nav class="tabs"><button class="on">포스트</button><button>해외 다이제스트</button><button>수집</button></nav>
+  <nav class="tabs"><button class="on" data-view="posts">포스트</button><button data-view="digest">해외 다이제스트</button><button data-view="collect">수집</button></nav>
 </div></header>
 
 <main class="wrap">
-  <div class="toolbar">
-    <div class="search"><span style="color:var(--muted)">🔍</span><input placeholder="관심 있는 게시글·댓글 검색..." aria-label="검색"><button class="btn-go">검색</button></div>
-    <button class="btn-ghost">필터</button>
-    <button class="btn-ghost">＋ 신규 수집</button>
-  </div>
-  <div class="chips" id="chips"></div>
-  <div class="grid" id="grid"></div>
+  <section id="view-posts">
+    <div class="toolbar">
+      <div class="search"><span style="color:var(--muted)">🔍</span><input placeholder="관심 있는 게시글·댓글 검색..." aria-label="검색"><button class="btn-go">검색</button></div>
+      <button class="btn-ghost">필터</button>
+      <button class="btn-ghost">＋ 신규 수집</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="view-digest" hidden>
+    <div class="dg-intro"><h2>해외 다이제스트</h2><p>수집한 글에서 그날의 소식을 골라 한국어 다이제스트로 엮어 블로그에 발행합니다.</p></div>
+    <div class="dg-list" id="dg-list"></div>
+  </section>
+
+  <section id="view-collect" hidden>
+    <div class="dg-intro"><h2>수집</h2><p>감시 중인 서브레딧에서 주기적으로 인기 글을 가져옵니다.</p></div>
+    <div class="collect-status" id="collect-status"></div>
+  </section>
 </main>
 
 <div class="overlay" id="overlay" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
-    <div class="modal-head"><div><div class="sub" id="m-sub"></div><h2 id="m-title"></h2></div><button class="close" id="m-close" aria-label="닫기">×</button></div>
+  <div class="modal" id="modal-post" role="dialog" aria-modal="true" aria-labelledby="m-title">
+    <div class="modal-head"><div><div class="sub" id="m-sub"></div><h2 id="m-title"></h2></div><button class="close close-x" aria-label="닫기">×</button></div>
     <div class="modal-body">
       <div class="col-left" id="col-left">
         <p class="col-label">본문 · 댓글 번역 <button class="toggle-orig" id="toggle-orig">원문 함께 보기</button></p>
@@ -115,6 +156,10 @@ header.top{border-bottom:1px solid var(--line);padding:16px 0}
         <div class="src" id="m-src"></div>
       </div>
     </div>
+  </div>
+  <div class="modal article" id="modal-article" role="dialog" aria-modal="true" aria-labelledby="art-title" hidden>
+    <div class="modal-head"><div><div class="sub" id="art-sub"></div><h2 id="art-title"></h2></div><button class="close close-x" aria-label="닫기">×</button></div>
+    <div class="art" id="art-body"></div>
   </div>
 </div>
 
@@ -232,9 +277,61 @@ const POSTS = [
    ]}
 ];
 
+const DIGESTS=[
+ {date:"2026-09-30", status:"발행됨",
+  title:"Anthropic 요금 개편, 자가전파 npm 웜, 코딩 에이전트의 컨텍스트 문제",
+  tldr:["Anthropic이 $200 프로 플랜을 조정하고 상위 $500 플랜을 신설 — '보조금 시대의 종료' 반응.",
+        "SSH로 스스로 퍼지는 악성 npm 패키지 9종 발견, 공급망 공격이 자동 확산 단계로.",
+        "코딩 에이전트가 수정한 파일의 옛 버전을 계속 프롬프트에 넣는 하네스 문제 지적."],
+  items:[
+   {h:"Anthropic, $200 반값·$500 신규 플랜", body:"기존 $200 프로 플랜의 가격·한도를 조정하고 그 위에 $500 상위 플랜을 신설했다. 헤비 유저를 상위 플랜으로 분리하려는 계층화이자, 실사용 추론 비용에 수렴하는 정상화라는 해석이 함께 나왔다.", src:"r/singularity"},
+   {h:"SSH로 자가 전파하는 npm 웜 9종", body:"설치되면 로컬 SSH 자격으로 접근 가능한 다른 호스트에 스스로 퍼지는 악성 패키지가 배포됐다. lockfile·무결성 검증·최소 권한, postinstall 스크립트 차단의 중요성이 다시 강조됐다.", src:"r/programming"},
+   {h:"에이전트 프롬프트에 남는 파일 옛 버전", body:"이미 수정한 파일인데도 컨텍스트에 옛 내용이 남아 모델이 헷갈리고 중복 코드를 만든다. 도구 결과를 최신 파일 상태로 갱신하는 게 하네스의 핵심 과제라는 결론.", src:"r/ChatGPTCoding"}
+  ]},
+ {date:"2026-09-29", status:"발행됨",
+  title:"Qwen3.5 등장과 16GB 로컬 추론, 그리고 '덜 생각하게' 만들기",
+  tldr:["알리바바 Qwen3.5(4B·9B·35B, 256K) 공개, 몇 시간 만에 로컬 양자화 등장.",
+        "16GB M4 맥미니에서 dense 9B가 ~18 tok/s — 역할 분리로 로컬 운영이 현실화.",
+        "'wait','maybe'에 로지트 페널티를 걸어 과도한 추론을 줄이자 정답률이 올랐다는 실험."],
+  items:[
+   {h:"Qwen3.5, 256K 컨텍스트로 출시", body:"4B·9B·35B 세 크기가 동시에 나왔고 도구 호출이 크게 개선됐다. 공개 직후 MLX·GGUF 양자화가 올라와 로컬 실행 장벽이 빠르게 낮아졌다.", src:"r/LocalLLaMA"},
+   {h:"16GB에서 dense 9B가 18 tok/s", body:"기본형 M4 맥미니에서 dense 9B는 약 18 tok/s, 소형 MoE 라우터는 70+ tok/s를 냈다. '작은 모델로 라우팅, 큰 모델은 품질'이라는 역할 분리가 합리적이다.", src:"r/LocalLLaMA"},
+   {h:"로지트 페널티로 정확도 향상", body:"'wait','maybe','perhaps' 같은 과도한 사고 마커에 로그 확률 페널티를 주자 MATH-500 일부에서 정답률이 올랐다. 작은 모델일수록 효과가 컸다.", src:"r/LocalLLaMA"}
+  ]}
+];
+
 const SUBS=[...new Set(POSTS.map(p=>p.sub))];
 const grid=document.getElementById('grid'),chips=document.getElementById('chips');
 let filter=null;
+
+// view switching
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  const v=b.dataset.view;
+  document.getElementById('view-posts').hidden=v!=='posts';
+  document.getElementById('view-digest').hidden=v!=='digest';
+  document.getElementById('view-collect').hidden=v!=='collect';
+  if(v==='digest')renderDigest();
+  if(v==='collect')renderCollect();
+});
+
+function renderDigest(){
+  document.getElementById('dg-list').innerHTML=DIGESTS.map((d,i)=>
+    `<button class="dg-card" onclick="openDigest(${i})"><div class="dg-top"><span class="dg-date">${d.date}</span><span class="dg-status">✓ ${d.status}</span></div>
+     <h3>${d.title}</h3><p class="dg-tldr">${d.tldr[0]}</p>
+     <div class="dg-meta">${d.items.length}개 글 · TL;DR ${d.tldr.length}줄</div></button>`).join('');
+}
+function renderCollect(){
+  document.getElementById('collect-status').innerHTML=
+    `<div class="cs-row">
+       <div class="cs-stat"><b>5</b><span>감시 서브레딧</span></div>
+       <div class="cs-stat"><b>9</b><span>오늘 신규 수집</span></div>
+       <div class="cs-stat"><b>3시간 전</b><span>마지막 수집</span></div>
+       <div class="cs-stat"><b>매일 06:00</b><span>다음 자동 수집</span></div>
+     </div>
+     <div class="cs-subs">${SUBS.map(s=>`<div class="cs-sub"><span>${s}</span><span class="on-dot">● 감시 중</span></div>`).join('')}</div>`;
+}
+
 function render(){
   const list=filter?POSTS.filter(p=>p.sub===filter):POSTS;
   grid.innerHTML='';
@@ -252,7 +349,20 @@ function render(){
   chips.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{filter=b.dataset.s||null;render();});
 }
 const overlay=document.getElementById('overlay'),colLeft=document.getElementById('col-left');
+const modalPost=document.getElementById('modal-post'),modalArt=document.getElementById('modal-article');
+function showOverlay(){overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');overlay.scrollTop=0;}
+function openDigest(i){
+  const d=DIGESTS[i];
+  document.getElementById('art-sub').textContent=d.date+' · 레딧 다이제스트 · ✓ '+d.status;
+  document.getElementById('art-title').textContent=d.title;
+  document.getElementById('art-body').innerHTML=
+    `<div class="note"><b>TL;DR</b><ul>${d.tldr.map(t=>`<li>${t}</li>`).join('')}</ul></div>`+
+    d.items.map(it=>`<h4>${it.h}</h4><p>${it.body}</p><p class="art-src"><a href="#">${it.src} 원문 ↗</a></p>`).join('')+
+    `<div class="src" style="margin-top:22px">이 다이제스트는 수집한 글을 골라 AI가 요약하고, 사람이 검토한 뒤 블로그에 발행합니다.</div>`;
+  modalPost.hidden=true;modalArt.hidden=false;showOverlay();
+}
 function openModal(i){
+  modalArt.hidden=true;modalPost.hidden=false;
   const p=POSTS[i];
   document.getElementById('m-sub').textContent=p.sub+' · '+p.time+' · ▲ '+p.score.toLocaleString();
   document.getElementById('m-title').textContent=p.title;
@@ -266,15 +376,14 @@ function openModal(i){
   document.getElementById('m-src').innerHTML=`<a href="#">Reddit 원문 ↗</a> · 본문·댓글을 AI가 번역하고 요약했습니다`;
   colLeft.classList.remove('show-en');
   const t=document.getElementById('toggle-orig');t.classList.remove('on');t.textContent='원문 함께 보기';
-  overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');
-  overlay.scrollTop=0;
+  showOverlay();
 }
 document.getElementById('toggle-orig').onclick=function(){
   const on=colLeft.classList.toggle('show-en');
   this.classList.toggle('on',on);this.textContent=on?'번역만 보기':'원문 함께 보기';
 };
 function closeModal(){overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');}
-document.getElementById('m-close').onclick=closeModal;
+document.querySelectorAll('.close-x').forEach(b=>b.onclick=closeModal);
 overlay.onclick=e=>{if(e.target===overlay)closeModal();};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 render();
